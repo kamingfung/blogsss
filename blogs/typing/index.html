@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Typing - Your Docs</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Typing";
+        var mkdocs_page_input_path = "blogs/typing.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> Your Docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../about/">About</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Blogs</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Typing</a>
+    <ul class="current">
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">Your Docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Blogs</li>
+      <li class="breadcrumb-item active">Typing</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="the-case-of-the-sneaky-comma-how-type-hinting-saved-my-debugging-sanity">The Case of the Sneaky Comma: How Type Hinting Saved My Debugging Sanity</h2>
+<p>We've all been there. Staring at a wall of code, convinced the logic is sound, yet the output stubbornly refuses to cooperate.  Hours can melt away as you meticulously trace every line, searching for that elusive bug.  Recently, I experienced this firsthand while helping a friend debug, and the culprit was surprisingly… a comma.  Yes, a single, misplaced comma brought the entire program to its knees.  This frustrating experience served as a powerful reminder of the importance of defensive coding practices, particularly the often-underutilized power of type hinting.</p>
+<p>The code in question was a complex data processing pipeline.  While logically sound, a tiny, almost invisible comma had crept into a list definition.  This seemingly insignificant punctuation mark completely altered the data structure, leading to a cascade of errors further down the line.  Finding it was like searching for a needle in a haystack.  The lesson learned?  Small syntax errors can have huge, unexpected consequences.</p>
+<p>This debugging escapade solidified three key takeaways that I believe can benefit every programmer:</p>
+<p><strong>1. Embrace the Power of Type Hinting:</strong></p>
+<p>Type hinting, also known as type annotations, allows you to specify the expected data type for variables, function arguments, and return values.  While Python is a dynamically typed language, type hints add a layer of static analysis that can catch many type-related errors <em>before</em> runtime.  Imagine if the code had explicitly stated the type of the list where the comma was misplaced.  A static analysis tool (like MyPy) would have likely flagged the inconsistency immediately, saving us precious debugging time.</p>
+<pre><code class="language-python">from typing import List, Tuple
+
+def process_data(data: List[int]) -&gt; Tuple[float, str]:
+    total = sum(data)
+    average = total / len(data)
+    message = f&quot;The average is: {average}&quot;
+    return average, message
+
+# Incorrect: Extra comma creates a tuple within the list
+data = [1, 2, 3,]  # Note the trailing comma - creates [1, 2, 3, ()]
+result = process_data(data) # MyPy would warn about type mismatch: Expected List[int], got List[Union[int, Tuple[()]]]
+
+# Correct
+data = [1, 2, 3]
+average, message = process_data(data)
+print(message) # Output: The average is: 2.0
+</code></pre>
+<p>By being explicit about variable types, you not only make your code more readable and maintainable, but you also provide valuable information to static analysis tools that can help you catch errors early.  In the example above, MyPy would likely flag the type mismatch because the function expects a <code>List[int]</code> but receives a <code>List[Union[int, Tuple[()]]]</code>.</p>
+<p><strong>2. Leverage the Magic of Code Formatters:</strong></p>
+<p>A well-configured code formatter (like Black or Autopep8) can automatically enforce consistent code style and highlight potential issues.  In our case, the formatter <em>might</em> have flagged the unusual structure created by the trailing comma (a tuple within a list where a list of integers was expected), depending on the formatter's rules.  While formatters won't catch <em>every</em> error, they can help you spot inconsistencies that might otherwise go unnoticed.  Think of it as a second pair of eyes, constantly scanning your code for anything out of the ordinary.</p>
+<pre><code class="language-python"># Example using Black (after running: black my_code.py)
+def my_function(x: int, y: int):
+    return x + y,  # Trailing comma - Black might reformat this to (x+y,) making the tuple creation more obvious.
+
+# After Black formatting:
+def my_function(x: int, y: int):
+    return (x + y,)
+</code></pre>
+<p>While Black might not directly flag the comma as an <em>error</em>, it will reformat the code, making the creation of a single-element tuple (which is what the comma does) more visually apparent, prompting you to investigate.</p>
+<p><strong>3. Test Your Code Thoroughly (and in Different Ways):</strong></p>
+<p>Testing is paramount.  While type hinting and code formatters can help prevent errors, they are not a silver bullet.  In our debugging scenario, we were relying on a single way of visualizing the data.  Had we used multiple methods (e.g., printing the data structure, using a debugger, visualizing different aspects of the data), we might have stumbled upon the comma issue sooner.  The key is to approach testing from different angles, challenging your code with various inputs and scenarios.</p>
+<pre><code class="language-python">import matplotlib.pyplot as plt
+
+def create_plot(data: List[int]):
+    plt.plot(data)
+    plt.show()  # Test 1: Show the plot directly
+
+    fig, ax = plt.subplots() # Test 2: Access figure and axes
+    ax.plot(data)
+    fig.show() # instead of fig
+
+
+    print(data) # Test 3: Print the data structure to inspect it.
+
+data = [1, 2, 3,]  # The dreaded comma!
+create_plot(data)
+</code></pre>
+<p>In this example, printing the <code>data</code> variable would have immediately revealed the unexpected tuple within the list, even if the plot itself appeared correct.  Testing both <code>plt.show()</code> and accessing the figure and axes separately provides different ways to interact with the plot and might reveal hidden issues.</p>
+<p>The comma incident, while frustrating, was a valuable learning experience.  It reinforced the importance of adopting defensive coding practices, including type hinting, code formatting, and thorough testing.  These practices not only help prevent errors but also make debugging significantly easier when the inevitable bugs do appear.  So, the next time you're staring at a wall of code, remember the sneaky comma and consider adding these techniques to your development arsenal.  They might just save your sanity.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../about/" class="btn btn-neutral float-left" title="About"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../about/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
