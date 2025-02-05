@@ -2,4 +2,13 @@ site_name: Your Docs
 nav:
 - Home: index.md
 - About: about.md
+- Blogs:
+  - Typing: blogs/typing.md
+  - Plotting US PM2.5: blogs/pm25/plot_pm25_usa_by_county.ipynb
 theme: readthedocs
+plugins:
+- mkdocs-jupyter:
+    include: [ "*.ipynb" ] # Default: ["*.py", "*.ipynb"]
+    ignore: [ "some-irrelevant-files/*.ipynb" ]
+    execute: true
+    allow_errors: false
