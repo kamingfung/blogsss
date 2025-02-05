@@ -15,7 +15,7 @@ repos:
   rev: v5.0.0
   hooks:
   - id: check-added-large-files
-    args: [ '--maxkb=5000' ] # Measured in kilobytes
+    args: [ '--maxkb=50000' ] # Measured in kilobytes
   - id: detect-private-key
 - repo: https://github.com/Yelp/detect-secrets
   rev: v1.5.0
