@@ -1,0 +1,11 @@
+.dynamic-highlight {
+  background-color: yellow; /* Customize the highlight color */
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.search-highlight{
+    background-color: lightblue;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
